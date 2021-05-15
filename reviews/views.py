@@ -2,7 +2,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic.base import TemplateView
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from .forms import ReviewForm
 from .models import Review
@@ -49,12 +49,7 @@ class ReviewsListView(ListView):
     #     return data
 
 
-class SingleReviewView(TemplateView):
+class SingleReviewView(DetailView):
     template_name = "reviews/single_review.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        review_id = kwargs["id"]
-        review = get_object_or_404(Review, pk=review_id)
-        context["review"] = review
-        return context
+    model = Review
+    # context_object_name = 'review'
