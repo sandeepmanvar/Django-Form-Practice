@@ -2,6 +2,8 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic.base import TemplateView
+from django.views.generic import ListView
+
 from .forms import ReviewForm
 from .models import Review
 # Create your views here.
@@ -36,14 +38,15 @@ class ThankYouView(TemplateView):
         return context
 
 
-class ReviewsListView(TemplateView):
+class ReviewsListView(ListView):
     template_name = "reviews/review_list.html"
+    model = Review
+    context_object_name = "reviews"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        reviews = Review.objects.all()
-        context["reviews"] = reviews
-        return context
+    # def get_queryset(self):
+    #     base_query = super().get_queryset()
+    #     data = base_query.filter(rating__gt=4)
+    #     return data
 
 
 class SingleReviewView(TemplateView):
@@ -52,6 +55,6 @@ class SingleReviewView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         review_id = kwargs["id"]
-        review = get_object_or_404(Review,pk=review_id)
+        review = get_object_or_404(Review, pk=review_id)
         context["review"] = review
         return context
